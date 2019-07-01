@@ -46,6 +46,29 @@ class PasswordField: UIControl {
         
         titleLabel.text = "Enter Your Password" // title of the password
         titleLabel.textColor = labelTextColor // set up the text colore of the enter password title
+        titleLabel.font = labelFont // set the lable font from above
+        
+        // need constrains
+        
+        addSubview(textField) // adding text field
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        
+        textField.layer.borderWidth = 1 // textfield boarder
+        textField.layer.borderColor = textFieldBorderColor.cgColor // text field boarder color
+        
+        // need constrains
+        
+        addSubview(showHideButton) // show/hide text button
+        
+        addSubview(weakView) // weak password animation
+        
+        weakView.backgroundColor = .lightGray // weak color at strat
+        weakView.frame = CGRect(x: standardMargin, y: standardMargin, width: colorViewSize.width, height: colorViewSize.height)
+        
+        addSubview(mediumView) // medium view animation
+        
+        addSubview(strongView) // strong view animation
+        
         
     }
     
