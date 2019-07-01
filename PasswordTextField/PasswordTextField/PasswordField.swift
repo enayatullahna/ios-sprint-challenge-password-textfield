@@ -49,16 +49,29 @@ class PasswordField: UIControl {
         titleLabel.font = labelFont // set the lable font from above
         
         // need constrains
+        NSLayoutConstraint.activate([titleLabel.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: standardMargin), // leading
+            titleLabel.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: standardMargin), // trailing
+            titleLabel.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: standardMargin)]) // top
+
         
         addSubview(textField) // adding text field
         textField.translatesAutoresizingMaskIntoConstraints = false
         
         textField.layer.borderWidth = 1 // textfield boarder
         textField.layer.borderColor = textFieldBorderColor.cgColor // text field boarder color
+        textField.backgroundColor = bgColor // background color
+        textField.isSecureTextEntry = true // password secure, to hide the text
+        
+        NSLayoutConstraint.activate([textField.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: standardMargin), // leading
+            textField.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: standardMargin), // trailing
+            textField.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: textFieldMargin), // top to make sure its under title field
+            textField.heightAnchor.constraint(equalToConstant: textFieldContainerHeight)])
         
         // need constrains
         
         addSubview(showHideButton) // show/hide text button
+        showHideButton.frame = CGRect(x: 300, y: 40, width: 35, height: 35) // image location
+        showHideButton.setImage(UIImage(named: "eyes-closed"), for: .normal) // use the image eyeclosed
         
         addSubview(weakView) // weak password animation
         
