@@ -43,6 +43,10 @@ class PasswordField: UIControl {
         
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        titleLabel.text = "Enter Your Password" // title of the password
+        titleLabel.textColor = labelTextColor // set up the text colore of the enter password title
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
