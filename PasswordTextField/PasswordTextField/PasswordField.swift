@@ -165,6 +165,7 @@ extension PasswordField: UITextFieldDelegate {
         let stringRange = Range(range, in: oldText)!
         let newText = oldText.replacingCharacters(in: stringRange, with: string)
         // TODO: send new text to the determine strength method
+        password = newText
         
         if newText.count <= 9 { // Weak Animation and Color
             if newText.isEmpty{
@@ -203,7 +204,17 @@ extension PasswordField: UITextFieldDelegate {
             strongView.backgroundColor = strongColor
             strengthDescriptionLabel.text = passwordStrength.strong.rawValue
         }
+        
         return true
+    }
+    
+    
+    // return hit
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        sendActions(for: .valueChanged)
+        textField.text = "" // clear text after hitting enter
+        return false
     }
 }
 
