@@ -70,20 +70,72 @@ class PasswordField: UIControl {
         // need constrains
         
         addSubview(showHideButton) // show/hide text button
-        showHideButton.frame = CGRect(x: 300, y: 40, width: 35, height: 35) // image location
+        showHideButton.frame = CGRect(x: 340, y: 40, width: 35, height: 35) // image location
         showHideButton.setImage(UIImage(named: "eyes-closed"), for: .normal) // use the image eyeclosed
+        showHideButton.addTarget(self, action: #selector(eyebuttonTapped), for: .touchUpInside)
         
         addSubview(weakView) // weak password animation
         
         weakView.backgroundColor = .lightGray // weak color at strat
-        weakView.frame = CGRect(x: standardMargin, y: standardMargin, width: colorViewSize.width, height: colorViewSize.height)
+        weakView.frame = CGRect(x: standardMargin, y: 90, width: colorViewSize.width, height: colorViewSize.height)
+        
+//        let weakViewCons = textField.leadingAnchor.constraint(equalTo: self.textField.safeAreaLayoutGuide.leadingAnchor, constant: 30)
+
         
         addSubview(mediumView) // medium view animation
+        mediumView.backgroundColor = .lightGray
+        mediumView.frame = CGRect(x: standardMargin * 2 + colorViewSize.width, y: 90, width: colorViewSize.width, height: colorViewSize.height)
         
         addSubview(strongView) // strong view animation
+        strongView.backgroundColor = .lightGray
+        strongView.frame = CGRect(x: standardMargin * 10.5 + colorViewSize.width, y: 90, width: colorViewSize.width, height: colorViewSize.height)
+        
+        
+        addSubview(strengthDescriptionLabel)
+        strengthDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        strengthDescriptionLabel.text = "Too Weak" // default text
+        strengthDescriptionLabel.textColor = labelTextColor
+        strengthDescriptionLabel.font = labelFont
+        
+//        strengthDescriptionLabel.frame = CGRect(x: standardMargin * 20 + colorViewSize.width, y: 90, width: colorViewSize.width, height: colorViewSize.height)
+        
+        NSLayoutConstraint.activate([strengthDescriptionLabel.leadingAnchor.constraint(equalTo: strongView.trailingAnchor, constant: standardMargin), strengthDescriptionLabel.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -standardMargin), strengthDescriptionLabel.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -standardMargin)])
+        
+//        let stackView = UIStackView()
+//        stackView.translatesAutoresizingMaskIntoConstraints = false
+//        self.textField.addSubview(stackView)
+//
+//        stackView.axis = .horizontal
+//        stackView.distribution = .equalSpacing
+//
+//        stackView.addArrangedSubview(weakView)
+//        stackView.addArrangedSubview(mediumView)
+//        stackView.addArrangedSubview(strongView)
+//
+//        NSLayoutConstraint.activate(
+//            [
+//
+//                stackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 20),
+//                stackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -20),
+//                stackView.bottomAnchor.constraint(equalTo: textField.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+//
+//            ]
+//        )
+        
         
         
     }
+    
+    @objc func eyebuttonTapped() {
+        if showHideButton.currentImage!.isEqual(UIImage(named: "eyes-open")) {
+            textField.isSecureTextEntry = true
+            showHideButton.setImage(UIImage(named: "eyes-closed"), for: .normal)
+        } else {
+            textField.isSecureTextEntry = false
+            showHideButton.setImage(UIImage(named: "eyes-open"), for: .normal)
+        }
+    }
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
