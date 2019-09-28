@@ -40,23 +40,135 @@ class PasswordField: UIControl {
     
     func setup() {
         // Lay out your subviews here
+        self.backgroundColor = bgColor // color test
+        self.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 20)
+        self.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 40)
+        self.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -20)
+        self.layer.cornerRadius = 8
         
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        titleLabel.text = "Enter Your Password" // password
+        titleLabel.textColor = labelTextColor // label text
+        titleLabel.font = labelFont // set the lable font
+        
+        // title
+        NSLayoutConstraint.activate([titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: standardMargin), // leading
+            titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: standardMargin), // top margin
+            titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -standardMargin) // trailing
+            ]) // top
+
+        
+        addSubview(textField) // adding text field
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        
+        textField.layer.borderWidth = 1.0 // textfield boarder
+        textField.layer.borderColor = textFieldBorderColor.cgColor // text field boarder color
+        textField.backgroundColor = bgColor // background color
+        textField.isSecureTextEntry = true // password secure, to hide the text
+        textField.layer.cornerRadius = 4
+        
+        // text field constraint
+        NSLayoutConstraint.activate([
+            textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: textFieldMargin), // leading
+            textField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -textFieldMargin), // trailing
+            textField.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: textFieldMargin), // top to make sure its under title field
+            textField.heightAnchor.constraint(equalToConstant: textFieldContainerHeight) // highth
+            ])
+        
+        // ShowButton
+        
+        textField.addSubview(showHideButton)
+        showHideButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        textField.delegate = self
+        textField.becomeFirstResponder()
+    
+        showHideButton.setImage(UIImage(named: "eyes-closed"), for: .normal) // use the image eyeclosed
+        showHideButton.addTarget(self, action: #selector(PasswordField.eyeButtonTapped), for: .touchUpInside)
+        
+        textField.rightView = showHideButton
+        textField.rightViewMode = .always
+        
+        
+        // add constrains to eye - show/hide button
+        // show button constraint
+        showHideButton.topAnchor.constraint(equalTo: textField.topAnchor).isActive = true // top
+        showHideButton.trailingAnchor.constraint(equalTo: textField.trailingAnchor, constant: -standardMargin).isActive = true // trailing
+        showHideButton.bottomAnchor.constraint(equalTo: textField.bottomAnchor).isActive = true // bottom
+        showHideButton.heightAnchor.constraint(equalToConstant: textFieldContainerHeight).isActive = true // highth
+        showHideButton.widthAnchor.constraint(equalToConstant: 40.0).isActive = true // width
+        
+    
+        // views
+        // Weak view
+        addSubview(weakView) // weak password animation
+        weakView.backgroundColor = .lightGray // weak color at strat   // for test changed color
+        weakView.frame = CGRect(x: standardMargin, y: 94, width: colorViewSize.width, height: colorViewSize.height) // weak position
+
+        // Medium View
+        addSubview(mediumView) // medium view animation
+        mediumView.backgroundColor = .lightGray // for test changed color
+        mediumView.frame = CGRect(x: standardMargin * 2 + colorViewSize.width, y: 94, width: colorViewSize.width, height: colorViewSize.height) //Medium Position
+        
+        // strong view
+        addSubview(strongView) // strong view animation
+        strongView.backgroundColor = .lightGray // for test changed color
+        strongView.frame = CGRect(x: standardMargin * 10.5 + colorViewSize.width, y: 94, width: colorViewSize.width, height: colorViewSize.height) // strong Position
+        
+        // strenth view
+        // Weak text view
+        addSubview(strengthDescriptionLabel)
+        strengthDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        strengthDescriptionLabel.text = "Too Weak" // default text
+        strengthDescriptionLabel.textColor = labelTextColor // text color
+        strengthDescriptionLabel.font = UIFont.boldSystemFont(ofSize: 10) // fout size and style
+        
+        
+        // strength constraint
+        strengthDescriptionLabel.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: standardMargin).isActive = true
+        strengthDescriptionLabel.leadingAnchor.constraint(equalTo: strongView.trailingAnchor, constant: standardMargin).isActive = true
+        strengthDescriptionLabel.widthAnchor.constraint(equalToConstant: colorViewSize.width * 2).isActive = true
+        strengthDescriptionLabel.heightAnchor.constraint(equalToConstant: colorViewSize.height * 2).isActive = true
+        
     }
+    
+    @objc func eyeButtonTapped() {
+        
+    }
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
+    
+        textField.delegate = self
     }
 }
 
 extension PasswordField: UITextFieldDelegate {
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let oldText = textField.text!
-        let stringRange = Range(range, in: oldText)!
-        let newText = oldText.replacingCharacters(in: stringRange, with: string)
-        // TODO: send new text to the determine strength method
-        return true
+func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    let oldText = textField.text!
+    let stringRange = Range(range, in: oldText)!
+    let newText = oldText.replacingCharacters(in: stringRange, with: string)
+    // TODO: send new text to the determine strength method
+    return true
+}
+    
+    
+    // return hit
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        sendActions(for: .valueChanged)
+        textField.text = "" // clear text after hitting enter
+        return false
     }
+}
+
+//Enum
+enum passwordStrength: String {
+    case weak = "Too Weak"
+    case medium = "Could Be Stronger"
+    case strong = "Strong"
 }
